@@ -4,19 +4,13 @@
 
 import time
 import traceback
-from pprint import pprint
-import pytz
-from datetime import datetime
 
 # artifacts (metfuncs)
-# import wet_bulb
-# import synopsis
-# import okta_funcs
-# import solar_rad_expected
 import wind_calibration
 
 # artifacts (metrestapi)
 import cumulus_comms
+
 # artifacts (metminifuncs)
 import sync_start_time
 import jena_data
@@ -27,7 +21,6 @@ import get_cumulus_weather_info
 import get_env
 import get_env_app
 import definitions
-
 
 
 # Add a bunch of reliability code to this before deploying
