@@ -12,7 +12,7 @@ name = "ermin"
 [packages]
 # artifacts
 metrestapi = {version="1.0.6", index="ermin"}
-metminifuncs = {version="1.0.4", index="ermin"}
+metminifuncs = {version="1.0.5", index="ermin"}
 metfuncs = {version="1.0.25", index="ermin"}
 
 pytz = "==2021.1"
