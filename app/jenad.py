@@ -5,6 +5,8 @@
 import time
 import traceback
 from pprint import pprint
+import pytz
+from datetime import datetime
 
 # artifacts (metfuncs)
 # import wet_bulb
@@ -25,6 +27,23 @@ import append_mlearning_rec
 import sync_start_time
 
 # Add a bunch of reliability code to this before deploying
+# https://stackabuse.com/how-to-get-the-current-date-and-time-in-python/
+# 2021-03-07 20:55:08.94343+00.00
+def get_jena_timestamp():
+
+    utc_current_datetime = datetime.now(pytz.timezone("UTC")).__str__()
+    # print(utc_current_datetime)
+    date_part = utc_current_datetime.split(' ')[0]
+    time_part = utc_current_datetime.split(' ')[1].split('.')[0]
+    date_parts = date_part.split('-')
+    year = date_parts[0]
+    month = date_parts[1]
+    day = date_parts[2]
+
+    jena_timestamp = day + '.' + month + '.' + year + ' ' + time_part
+
+    return jena_timestamp
+
 
 def main():
     try:
@@ -50,12 +69,13 @@ def main():
         print('verbose=' + verbose.__str__())
         print('cumulusmx endpoint=' + cumulusmx_endpoint)
 
-        print('waiting to sync main loop...')
-        sync_start_time.wait_until_minute_flip(10)
-
         print('entering main loop...')
         while True:
+            print('waiting to sync main loop...')
+            sync_start_time.wait_until_minute_flip(10)
             start_secs = time.time()
+            record_timestamp = get_jena_timestamp()
+
             cumulus_weather_info = get_cumulus_weather_info.get_key_weather_variables(cumulusmx_endpoint)     # REST API call
             # cumulus_weather_info = None
             if cumulus_weather_info is None:        # can't talk to CumulusMX
@@ -72,10 +92,10 @@ def main():
             weather_info['wind_gust'] = float(cumulus_weather_info['Recentmaxgust'])
             weather_info['wind_deg'] = int(cumulus_weather_info['Bearing'])
 
-            append_mlearning_rec.append_mlearning_info(weather_info)
+            append_mlearning_rec.append_mlearning_info(weather_info, record_timestamp)
 
             stop_secs = time.time()
-            sleep_secs = (mins_between_updates * 60) - (stop_secs - start_secs)
+            sleep_secs = (mins_between_updates * 60) - (stop_secs - start_secs) - 10
             time.sleep(sleep_secs)
 
     except Exception as e:

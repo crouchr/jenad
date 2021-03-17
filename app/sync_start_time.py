@@ -15,7 +15,7 @@ def wait_until_minute_flip(period):
         mins = int(time_str.split(':')[1])
         secs = int(time_str.split(':')[2])
         time.sleep(0.2)
-        if mins % period == 0:
+        if mins % period == 0 and secs == 0:
             return
 
 
