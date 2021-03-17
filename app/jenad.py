@@ -23,25 +23,6 @@ import get_env_app
 import definitions
 
 
-# Add a bunch of reliability code to this before deploying
-# https://stackabuse.com/how-to-get-the-current-date-and-time-in-python/
-# 2021-03-07 20:55:08.94343+00.00
-# def get_jena_timestamp():
-#
-#     utc_current_datetime = datetime.now(pytz.timezone("UTC")).__str__()
-#     # print(utc_current_datetime)
-#     date_part = utc_current_datetime.split(' ')[0]
-#     time_part = utc_current_datetime.split(' ')[1].split('.')[0]
-#     date_parts = date_part.split('-')
-#     year = date_parts[0]
-#     month = date_parts[1]
-#     day = date_parts[2]
-#
-#     jena_timestamp = day + '.' + month + '.' + year + ' ' + time_part
-#
-#     return jena_timestamp
-
-
 def main():
     try:
         weather_info = {}
@@ -65,7 +46,7 @@ def main():
             verbose = True
         print('verbose=' + verbose.__str__())
         print('cumulusmx endpoint=' + cumulusmx_endpoint)
-
+        print('mlearning_log_filename=' + mlearning_log_filename)
         print('entering main loop...')
         while True:
             print('waiting to sync main loop...')
