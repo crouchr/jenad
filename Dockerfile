@@ -8,7 +8,6 @@ LABEL description="Jenad Daemon"
 ENV PYTHONUNBUFFERED=1
 
 RUN apt -y update
-#RUN apt -y upgrade
 #RUN apt -y install joe nmap
 
 # Install Python dependencies
