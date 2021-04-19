@@ -23,3 +23,12 @@ def get_vane_height_m():
         vane_height = 3.7       # value in Ermin Street
 
     return vane_height
+
+
+# elevation in metres
+def get_site_elevation():
+    if 'SITE_ELEVATION' in os.environ:
+        site_elevation = os.environ['SITE_ELEVATION']
+    else:
+        site_elevation = 50
+    return site_elevation

@@ -7,6 +7,7 @@ import traceback
 
 # artifacts (metfuncs)
 import wind_calibration
+import mean_sea_level_pressure
 
 # artifacts (metrestapi)
 import cumulus_comms
@@ -36,6 +37,7 @@ def main():
         vane_height_m = get_env_app.get_vane_height_m()
         mlearning_log_filename = definitions.JENAD_ROOT + 'mlearning.csv'
         wind_speed_multiplier = wind_calibration.calc_vane_height_to_10m_multiplier(vane_height_m)
+        site_elevation_m = get_env_app.get_site_elevation()
 
         lat = 51.4151   # Stockcross
         lon = -1.3776   # Stockcross
@@ -47,10 +49,12 @@ def main():
         print('verbose=' + verbose.__str__())
         print('cumulusmx endpoint=' + cumulusmx_endpoint)
         print('mlearning_log_filename=' + mlearning_log_filename)
+        print('site_elevation_m=' + site_elevation_m.__str__())
+
         print('entering main loop...')
         while True:
             print('waiting to sync main loop...')
-            sync_start_time.wait_until_minute_flip(10)
+            sync_start_time.wait_until_minute_flip(10) # comment this out when debugging
             start_secs = time.time()
             record_timestamp = jena_data.get_jena_timestamp()
 
@@ -61,8 +65,12 @@ def main():
                 cumulus_comms.wait_until_cumulus_data_ok(cumulusmx_endpoint)  # loop until CumulusMX data is OK
                 continue
 
-            weather_info['pressure'] = float(cumulus_weather_info['Pressure'])
             weather_info['temp'] = float(cumulus_weather_info['OutdoorTemp'])
+
+            weather_info['pressure'] = float(cumulus_weather_info['Pressure'])
+            pressure = float(cumulus_weather_info['Pressure'])
+            weather_info['pressure'] = round(pressure + mean_sea_level_pressure.msl_k_factor(site_elevation_m, weather_info['temp']), 1)
+
             weather_info['dew_point'] = float(cumulus_weather_info['OutdoorDewpoint'])
             weather_info['feels_like'] = float(cumulus_weather_info['FeelsLike'])
             weather_info['humidity'] = float(cumulus_weather_info['OutdoorHum'])
